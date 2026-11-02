@@ -1,0 +1,145 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource/barlow-semi-condensed/500.css";
+@import "@fontsource/barlow-semi-condensed/600.css";
+@import "@fontsource/barlow-semi-condensed/700.css";
+
+/* One theme only. Bound to a class we never set, so shadcn's dark: utilities
+   don't follow the OS (Tailwind's default dark variant is prefers-color-scheme). */
+@custom-variant dark (&:is(.dark *));
+
+/* Blink: near-black night, Flash's electric yellow as the only accent.
+   Yellow means "it's up" (ready, live, brand); everything else stays neutral. */
+:root {
+    --flash: #f2e94e;
+
+    --background: #0b0d12;
+    --foreground: #eef0f4;
+    --card: #12151c;
+    --card-foreground: #eef0f4;
+    --popover: #0e1117;
+    --popover-foreground: #eef0f4;
+    --primary: var(--flash);
+    --primary-foreground: #14140a;
+    --secondary: #191d26;
+    --secondary-foreground: #eef0f4;
+    --muted: #161a22;
+    --muted-foreground: #9aa0ac;
+    --accent: #1d222c;
+    --accent-foreground: #eef0f4;
+    --destructive: #ff6b5e;
+    --destructive-foreground: #14140a;
+    --border: rgb(255 255 255 / 0.08);
+    --input: rgb(255 255 255 / 0.14);
+    --ring: var(--flash);
+
+    /* Countdown text sits on a darkened icon, so it's plain white. */
+    --cooldown: #ffffff;
+    --glass: rgb(11 13 18 / 0.88);
+
+    --font-sans: "Barlow Semi Condensed", ui-sans-serif, system-ui, sans-serif;
+    --radius: 0.125rem;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-flash: var(--flash);
+    --color-cooldown: var(--cooldown);
+    --color-glass: var(--glass);
+
+    --font-sans: var(--font-sans);
+
+    --radius-sm: var(--radius);
+    --radius-md: var(--radius);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 2);
+}
+
+/* Panel: hairline border with a faint streak of Flash light along the top edge. */
+@utility frame {
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 0 rgb(242 233 78 / 0.22);
+}
+
+/* A spell coming back: a bright pop on the icon... */
+@keyframes blink-pop {
+    0% {
+        opacity: 0.95;
+        transform: scale(1.25);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+}
+/* ...and afterimages trailing off it, the way Flash leaves you behind. */
+@keyframes blink-trail {
+    0% {
+        box-shadow:
+            -7px 0 0 -2px rgb(242 233 78 / 0.55),
+            -13px 0 0 -4px rgb(242 233 78 / 0.3);
+    }
+    100% {
+        box-shadow:
+            0 0 0 0 rgb(242 233 78 / 0),
+            0 0 0 0 rgb(242 233 78 / 0);
+    }
+}
+@utility animate-blink-pop {
+    animation: blink-pop 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@utility animate-blink-trail {
+    animation: blink-trail 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+    .animate-blink-pop,
+    .animate-blink-trail {
+        animation: none;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background font-sans text-foreground antialiased select-none;
+        font-variant-numeric: tabular-nums;
+    }
+    ::selection {
+        background: rgb(242 233 78 / 0.3);
+    }
+    input {
+        caret-color: var(--flash);
+    }
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: rgb(255 255 255 / 0.12);
+    }
+    /* The overlay window is transparent; only its panel is painted. */
+    html:has(.overlay-root),
+    html:has(.overlay-root) body {
+        background: transparent;
+    }
+}

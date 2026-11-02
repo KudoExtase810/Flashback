@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T00:00:00Z",
+  "title": "Design System: Flashback",
+  "extensions": {
+    "colorMeta": {
+      "flash": { "role": "primary", "displayName": "Flash Yellow", "canonical": "#f2e94e", "tonalRamp": ["#2b2908", "#4d4a10", "#757019", "#a39c25", "#cfc635", "#f2e94e", "#f7f08a", "#fcf9cf"] },
+      "flash-ink": { "role": "primary", "displayName": "Flash Ink", "canonical": "#14140a", "tonalRamp": ["#0a0a05", "#14140a", "#26261a", "#3d3d2d", "#5c5c48", "#858570", "#b3b3a3", "#e3e3da"] },
+      "night": { "role": "neutral", "displayName": "Night", "canonical": "#0b0d12", "tonalRamp": ["#0b0d12", "#12151c", "#191d26", "#2a303c", "#474e5c", "#6e7584", "#9aa0ac", "#eef0f4"] },
+      "panel": { "role": "neutral", "displayName": "Panel", "canonical": "#12151c" },
+      "popover": { "role": "neutral", "displayName": "Popover", "canonical": "#0e1117" },
+      "secondary": { "role": "neutral", "displayName": "Slate Secondary", "canonical": "#191d26" },
+      "muted": { "role": "neutral", "displayName": "Muted", "canonical": "#161a22" },
+      "accent": { "role": "neutral", "displayName": "Accent (hover fill)", "canonical": "#1d222c" },
+      "foreground": { "role": "neutral", "displayName": "Frost", "canonical": "#eef0f4" },
+      "muted-foreground": { "role": "neutral", "displayName": "Ash", "canonical": "#9aa0ac" },
+      "cooldown": { "role": "neutral", "displayName": "Countdown White", "canonical": "#ffffff" },
+      "destructive": { "role": "neutral", "displayName": "Ember", "canonical": "#ff6b5e", "tonalRamp": ["#3a0f0b", "#661a14", "#94261d", "#c43528", "#ff6b5e", "#ff8f85", "#ffb8b1", "#ffe3e0"] },
+      "border": { "role": "neutral", "displayName": "Hairline", "canonical": "rgb(255 255 255 / 0.08)" },
+      "input": { "role": "neutral", "displayName": "Field Line", "canonical": "rgb(255 255 255 / 0.14)" },
+      "glass": { "role": "neutral", "displayName": "Glass", "canonical": "rgb(11 13 18 / 0.88)" }
+    },
+    "typographyMeta": {
+      "wordmark": { "displayName": "Wordmark", "purpose": "FLASHBACK wordmark and page titles, uppercase." },
+      "title": { "displayName": "Title", "purpose": "Champion names, card headings, step titles, setting labels." },
+      "body": { "displayName": "Body", "purpose": "Hints and explanatory copy in Ash; tabular numerals globally." },
+      "label": { "displayName": "Label", "purpose": "Uppercase section headings and alias terms in Ash; badges at 11px bold." },
+      "countdown": { "displayName": "Countdown", "purpose": "White numerals on dimmed timer icons, 11-15px by icon size." }
+    },
+    "shadows": [
+      { "name": "frame-streak", "value": "inset 0 1px 0 rgb(242 233 78 / 0.22)", "purpose": "Yellow top-edge light on every framed panel, paired with a 1px Hairline border." },
+      { "name": "overlay-lift", "value": "0 4px 16px rgb(0 0 0 / 0.45)", "purpose": "In-game overlay panel only, to separate it from the game image." },
+      { "name": "blink-trail", "value": "-7px 0 0 -2px rgb(242 233 78 / 0.55), -13px 0 0 -4px rgb(242 233 78 / 0.3)", "purpose": "Start frame of the afterimage keyframe on a returning timer icon." },
+      { "name": "countdown-text", "value": "0 1px 2px rgb(0 0 0 / 0.95)", "purpose": "Text shadow keeping the white countdown legible over any icon art." }
+    ],
+    "motion": [
+      { "name": "ease-blink", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Easing for blink-pop and blink-trail." },
+      { "name": "blink-pop", "value": "450ms", "purpose": "Yellow screen-blended flash, scale 1.25 to 1, opacity 0.95 to 0." },
+      { "name": "blink-trail", "value": "700ms", "purpose": "Two yellow afterimages trailing left, fading to nothing." },
+      { "name": "ready-hold", "value": "3000ms", "purpose": "2px yellow ring held after a timer returns; the only part kept under reduced motion." },
+      { "name": "dim-transition", "value": "filter 300ms", "purpose": "Icon dims or restores as cooldown starts or ends." }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Timer Icon",
+      "kind": "custom",
+      "refersTo": "timer-icon",
+      "description": "Signature square game icon: dimmed with a dark sweep and white countdown while down; blinks yellow when it returns.",
+      "html": "<div class=\"ds-timer-row\"><span class=\"ds-timer ds-timer-down\"><span class=\"ds-timer-art\"></span><span class=\"ds-timer-sweep\"></span><span class=\"ds-timer-num\">2:41</span></span><span class=\"ds-timer ds-timer-up\"><span class=\"ds-timer-art\"></span></span></div>",
+      "css": ".ds-timer-row { display: flex; gap: 4px; padding: 12px; background: var(--card, #12151c); } .ds-timer { position: relative; display: grid; place-items: center; width: 36px; height: 36px; overflow: hidden; background: #191d26; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1); font-family: 'Barlow Semi Condensed', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; } .ds-timer-art { position: absolute; inset: 0; background: linear-gradient(135deg, #f7d04a, #e07b20 60%, #6b2a10); } .ds-timer-down .ds-timer-art { filter: brightness(0.75) grayscale(0.7); } .ds-timer-sweep { position: absolute; inset: 0; background: conic-gradient(rgb(5 6 9 / 0.78) 230deg, rgb(5 6 9 / 0.3) 0); } .ds-timer-num { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 15px; text-shadow: 0 1px 2px rgb(0 0 0 / 0.95); } .ds-timer-up { box-shadow: 0 0 0 2px #f2e94e; animation: ds-blink-trail 700ms cubic-bezier(0.16, 1, 0.3, 1) infinite; } .ds-timer-up::after { content: ''; position: absolute; inset: 0; background: #f2e94e; mix-blend-mode: screen; animation: ds-blink-pop 450ms cubic-bezier(0.16, 1, 0.3, 1) infinite both; } @keyframes ds-blink-pop { 0% { opacity: 0.95; transform: scale(1.25); } 100% { opacity: 0; transform: scale(1); } } @keyframes ds-blink-trail { 0% { box-shadow: 0 0 0 2px #f2e94e, -7px 0 0 -2px rgb(242 233 78 / 0.55), -13px 0 0 -4px rgb(242 233 78 / 0.3); } 100% { box-shadow: 0 0 0 2px #f2e94e, 0 0 0 0 rgb(242 233 78 / 0), 0 0 0 0 rgb(242 233 78 / 0); } } @media (prefers-reduced-motion: reduce) { .ds-timer-up, .ds-timer-up::after { animation: none; } .ds-timer-up::after { opacity: 0; } }"
+    },
+    {
+      "name": "Framed Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Square Panel card with a Hairline border and a faint yellow streak along the top edge.",
+      "html": "<section class=\"ds-panel\"><span class=\"ds-diamond\"></span><div><h2 class=\"ds-panel-title\">Waiting for a game</h2><p class=\"ds-panel-hint\">Starts by itself when a game loads, Practice Tool included.</p></div></section>",
+      "css": ".ds-panel { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #12151c; color: #eef0f4; border: 1px solid rgb(255 255 255 / 0.08); box-shadow: inset 0 1px 0 rgb(242 233 78 / 0.22); font-family: 'Barlow Semi Condensed', ui-sans-serif, system-ui, sans-serif; } .ds-diamond { width: 8px; height: 8px; flex-shrink: 0; transform: rotate(45deg); background: #f2e94e; } .ds-panel-title { margin: 0 0 2px; font-size: 15px; font-weight: 600; } .ds-panel-hint { margin: 0; font-size: 12px; color: #9aa0ac; }"
+    },
+    {
+      "name": "Live Badge",
+      "kind": "chip",
+      "refersTo": "badge-live",
+      "description": "Game status: LIVE in yellow with a pulsing diamond, NO GAME in Ash.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-badge-live\"><span class=\"ds-badge-dot\"></span>LIVE</span><span class=\"ds-badge ds-badge-off\"><span class=\"ds-badge-dot\"></span>NO GAME</span></div>",
+      "css": ".ds-badges { display: flex; gap: 8px; padding: 12px; background: #0b0d12; } .ds-badge { display: flex; align-items: center; gap: 6px; padding: 2px 6px; font-family: 'Barlow Semi Condensed', ui-sans-serif, system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; } .ds-badge-dot { width: 6px; height: 6px; transform: rotate(45deg); } .ds-badge-live { color: #f2e94e; box-shadow: 0 0 0 1px rgb(242 233 78 / 0.5); } .ds-badge-live .ds-badge-dot { background: #f2e94e; animation: ds-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; } .ds-badge-off { color: #9aa0ac; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08); } .ds-badge-off .ds-badge-dot { background: #9aa0ac; } @keyframes ds-pulse { 50% { opacity: 0.5; } } @media (prefers-reduced-motion: reduce) { .ds-badge-live .ds-badge-dot { animation: none; } }"
+    },
+    {
+      "name": "Ghost Icon Button",
+      "kind": "button",
+      "refersTo": "button-ghost-icon",
+      "description": "The only shipped button: 28px square ghost icon button in the header.",
+      "html": "<button class=\"ds-btn-ghost\" title=\"Settings\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/></svg></button>",
+      "css": ".ds-btn-ghost { display: inline-grid; place-items: center; width: 28px; height: 28px; padding: 0; color: #eef0f4; background: transparent; border: 1px solid transparent; border-radius: 2px; cursor: pointer; outline: none; transition: background 150ms, color 150ms; } .ds-btn-ghost:hover { background: #161a22; } .ds-btn-ghost:focus-visible { border-color: #f2e94e; box-shadow: 0 0 0 3px rgb(242 233 78 / 0.5); } .ds-btn-ghost:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Callout Input",
+      "kind": "input",
+      "refersTo": "input-callout",
+      "description": "Recessed Night field for testing callouts; yellow caret and focus.",
+      "html": "<div class=\"ds-input-wrap\"><input class=\"ds-input\" placeholder=\"Test a callout: top f, mid tp, yas r\" aria-label=\"Test a callout\" /></div>",
+      "css": ".ds-input-wrap { padding: 12px; background: #12151c; } .ds-input { width: 100%; height: 36px; padding: 4px 10px; background: #0b0d12; color: #eef0f4; border: 1px solid rgb(255 255 255 / 0.14); border-radius: 2px; font-family: 'Barlow Semi Condensed', ui-sans-serif, system-ui, sans-serif; font-size: 15px; caret-color: #f2e94e; outline: none; transition: border-color 150ms, box-shadow 150ms; } .ds-input::placeholder { color: #9aa0ac; } .ds-input:focus-visible { border-color: #f2e94e; box-shadow: 0 0 0 3px rgb(242 233 78 / 0.5); }"
+    },
+    {
+      "name": "Kbd Chip",
+      "kind": "chip",
+      "refersTo": "kbd-chip",
+      "description": "Square callout-syntax chip used in explanations and the alias reference.",
+      "html": "<dl class=\"ds-alias\"><dt>Who</dt><dd><kbd class=\"ds-kbd\">top</kbd><kbd class=\"ds-kbd\">mid</kbd><kbd class=\"ds-kbd\">yas</kbd></dd><dt>Summs</dt><dd><kbd class=\"ds-kbd\">f</kbd><kbd class=\"ds-kbd\">tp</kbd><kbd class=\"ds-kbd\">ig</kbd></dd></dl>",
+      "css": ".ds-alias { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 6px 12px; margin: 0; padding: 12px; background: #0b0d12; font-family: 'Barlow Semi Condensed', ui-sans-serif, system-ui, sans-serif; font-size: 12px; } .ds-alias dt { font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #9aa0ac; } .ds-alias dd { display: flex; gap: 4px; margin: 0; } .ds-kbd { display: inline-flex; align-items: center; justify-content: center; height: 20px; min-width: 20px; padding: 0 4px; background: #191d26; color: #eef0f4; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08); font-family: inherit; font-size: 12px; font-weight: 500; }"
+    },
+    {
+      "name": "Wordmark",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "FLASHBACK with three yellow speed streaks trailing into it; the header anchor.",
+      "html": "<header class=\"ds-header\"><h1 class=\"ds-wordmark\"><span class=\"ds-streaks\" aria-hidden=\"true\"><span style=\"width:12px;opacity:.6\"></span><span style=\"width:20px\"></span><span style=\"width:10px;opacity:.4\"></span></span>FLASHBACK</h1></header>",
+      "css": ".ds-header { padding: 16px; background: #0b0d12; } .ds-wordmark { display: flex; align-items: center; gap: 6px; margin: 0; color: #eef0f4; font-family: 'Barlow Semi Condensed', ui-sans-serif, system-ui, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 0.18em; } .ds-streaks { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; } .ds-streaks span { display: block; height: 2px; background: linear-gradient(to right, transparent, #f2e94e); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Blink",
+    "overview": "The app is named after Flash, so it behaves like one: things that come back blink. The world is a near-black night with hard-edged, almost square panels and a single electric yellow that carries exactly one meaning: it's up. Live status, the brand streaks, and a spell returning are yellow; everything else stays neutral grey-white so that the yellow, when it appears, reads in a fraction of a second over a busy game map.\n\nDensity is high and deliberate. The main window is 420px wide and the overlay is a tiny click-through strip of square icons, so every element earns its pixels: tight 4px gaps between icons, condensed type, tabular numerals for every number. Cooldown state is shown by subtraction, not addition: a down icon is dimmed and desaturated with a dark sweep wedge and a plain white countdown, and the reward is the blink when it returns.",
+    "keyCharacteristics": [
+      "Near-black ground, slightly lifted panels, hairline white borders.",
+      "One accent, Flash yellow, used only for \"up\" (live, brand, returning spell).",
+      "Square geometry: 2px corners at most, many surfaces fully square.",
+      "Barlow Semi Condensed throughout, tabular numerals globally.",
+      "Signature motion: the blink (pop plus two yellow afterimages, then a 3s yellow ring)."
+    ],
+    "rules": [
+      { "name": "The It's-Up Rule", "body": "Yellow means \"up\" and nothing else: live, brand, a spell returning, and the focus ring. Never put it on headings, labels, decorative numbers or selection states; dilution kills the signal.", "section": "colors" },
+      { "name": "The Dim-Not-Paint Rule", "body": "Cooldown is shown by dimming the icon (brightness 75%, grayscale 70%) under a dark conic sweep, with a white countdown. Never tint down-state icons a color.", "section": "colors" },
+      { "name": "The Tabular Rule", "body": "Every number is tabular (set globally on the body). Countdowns must not jitter as they tick.", "section": "typography" },
+      { "name": "The One Frame Rule", "body": "Panels get the frame, not a heavier shadow or a colored border. Depth comes from tone and the top-edge streak.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Flash Yellow to \"up\" meanings: live, brand streaks, the blink, focus.",
+      "Do frame every panel with the Hairline border and the yellow top-edge streak.",
+      "Do show cooldown by dimming the icon with the dark sweep and a white countdown.",
+      "Do use tabular numerals for every number.",
+      "Do keep corners square or at 2px.",
+      "Do honor reduced motion: blink and pulses collapse to static state (the ring, the dot)."
+    ],
+    "donts": [
+      "Don't put yellow on headings, section labels, step numbers or selected states.",
+      "Don't tint cooldown icons or countdowns a color; the countdown is white.",
+      "Don't add rounded cards, heavy shadows or colored borders; the overlay lift is the only drop shadow.",
+      "Don't add a second accent color or a light theme; there is one theme.",
+      "Don't add a second typeface."
+    ]
+  }
+}
