@@ -17,7 +17,7 @@ const CalloutInput = () => {
             <Input
                 value={phrase}
                 onChange={(e) => setPhrase(e.target.value)}
-                placeholder="Test a callout: top f, mid tp, yas ig"
+                placeholder="Test a callout: top f, mid tp, yas ig 10"
                 aria-label="Test a callout"
                 className="h-9 bg-background text-[15px]"
             />

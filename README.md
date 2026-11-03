@@ -20,8 +20,7 @@ Run either one to install.
 
 ## How it works
 
-1. **Call it in chat.** When an enemy uses Flash, press Enter, type `top f` and press Esc. Nothing is sent. Want your team to see it? Set Settings → "Finish callout with" to **Enter**.
-2. **Flashback times it.** The timer starts with the spell's real cooldown, counting the enemy's items. Enemies, spells and items come from the game itself, so there is nothing to set up.
+1. **Call it in chat.** When an enemy uses Flash, press Enter, type `top f` and press Esc. Nothing is sent. Want your team to see it? Set Settings → "Finish callout with" to **Enter**.2. **Flashback times it.** The timer starts with the spell's real cooldown, counting the enemy's items. Enemies, spells and items come from the game itself, so there is nothing to set up.
 3. **Hold Tab to check.** Enemy spells appear on screen. A dim icon with a number is still down. When it comes back, it flashes yellow. Prefer it always visible? Pick "Always on" in Settings.
 
 Before your first game, set League's window mode to **Borderless** or **Windowed**; the overlay can't draw over exclusive fullscreen. Flashback starts tracking by itself when a game loads, Practice Tool included.
@@ -41,3 +40,5 @@ A target, then what they used:
 | Cosmic Insight rune | `ci` marks it (summoner spells come back faster)                                                       |
 
 Several at once work too: `top f mid tp`.
+
+Called it late? Add how many seconds ago it was used: `yas f 10` starts Flash with 10 seconds already gone. Called it by mistake? Add `clear`: `yas f clear` marks it up again.

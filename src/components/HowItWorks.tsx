@@ -28,7 +28,7 @@ const HowItWorks = () => {
             body: (
                 <>
                     Flashback uses that champion's actual cooldown, shortened by haste from items they've bought, e.g.
-                    Ionian Boots of Lucidity.
+                    Ionian Boots of Lucidity. Called it after the fight? Add the seconds: <Keycap>top f 10</Keycap>.
                 </>
             ),
         },

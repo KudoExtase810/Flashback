@@ -14,6 +14,9 @@ if (!repo) throw new Error("The update endpoint in src-tauri/tauri.conf.json isn
 const keyPath = process.env.TAURI_SIGNING_PRIVATE_KEY_PATH ?? join(homedir(), ".tauri", "flashback.key");
 if (!existsSync(keyPath)) throw new Error(`Signing key not found at ${keyPath}`);
 
+// A failing test stops the release before anything is built.
+execSync("npm test", { stdio: "inherit" });
+
 // ponytail: the key has no password. If you add one, set TAURI_SIGNING_PRIVATE_KEY_PASSWORD before running.
 // The updater files (signed installer) are only made here: a plain `npm run tauri build` needs no key.
 execSync("npm run tauri build -- --config src-tauri/tauri.release.conf.json", {

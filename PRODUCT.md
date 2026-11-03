@@ -28,7 +28,7 @@ You keep timing the way you already do, by typing in chat; Flashback turns it in
 ## Capabilities and Constraints
 
 - Typing detection reads chat only, while the League window is focused. A callout ends with Enter (sent, team sees it) or Esc (discarded, private), chosen in Settings.
-- Commands: `<role|champ prefix> <spell>` for summoner spells.
+- Commands: `<role|champ prefix> <spell> [seconds ago]` for summoner spells.
 - Overlay shows while Tab is held, or always; corner presets.
 - Summoner haste comes from enemy items (parsed from Data Dragon). Cosmic Insight is marked by the player (`<who> ci` or the toggle), since the API only exposes keystones.
 - Summoner cooldowns are patch-dependent constants.

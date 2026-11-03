@@ -65,6 +65,9 @@ fn key_char(key: Key) -> Option<char> {
         KeyM => 'm', KeyN => 'n', KeyO => 'o', KeyP => 'p', KeyQ => 'q', KeyR => 'r',
         KeyS => 's', KeyT => 't', KeyU => 'u', KeyV => 'v', KeyW => 'w', KeyX => 'x',
         KeyY => 'y', KeyZ => 'z', Space => ' ',
+        // Digits, for "yas f 10" (seconds ago).
+        Num0 | Kp0 => '0', Num1 | Kp1 => '1', Num2 | Kp2 => '2', Num3 | Kp3 => '3', Num4 | Kp4 => '4',
+        Num5 | Kp5 => '5', Num6 | Kp6 => '6', Num7 | Kp7 => '7', Num8 | Kp8 => '8', Num9 | Kp9 => '9',
         _ => return None,
     };
     Some(c)

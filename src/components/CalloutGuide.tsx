@@ -84,9 +84,12 @@ const CalloutGuide = () => {
                             </>
                         )}
                     </li>
+                    <li>
+                        Called it late? Add how many seconds ago: <Keycap>yas f 10</Keycap>.
+                    </li>
                     <li>Calling the same thing again restarts its timer.</li>
                     <li>
-                        Called it by mistake? Put <Keycap>clear</Keycap> in front: <Keycap>clear mid f</Keycap>.
+                        Called it by mistake? Add <Keycap>clear</Keycap> and it's up again: <Keycap>mid f clear</Keycap>.
                     </li>
                 </ul>
             </GuideSection>

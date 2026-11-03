@@ -31,7 +31,9 @@ export function applyPhrase(state: GameState, phrase: string, now: number): Game
         }
         if (!enemy.spells.includes(spell)) continue; // live data says they don't have it
         const cd = cooldown(spell, summonerHaste(state, enemy));
-        timers[key] = { end: now + cd * 1000, cd };
+        const late = cmd.late ?? 0;
+        if (late >= cd) continue; // it would already be back
+        timers[key] = { end: now + (cd - late) * 1000, cd };
         changed = true;
     }
     return changed ? { ...state, timers } : state;
