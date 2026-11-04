@@ -24,29 +24,11 @@ const Settings = () => {
 
             <div className="frame divide-y divide-border bg-card px-3">
                 <SettingRow
-                    id="inputMode"
-                    label="Your callouts"
-                    hint={
-                        s.inputMode === "send"
-                            ? "You close chat with Enter, so your team sees each callout."
-                            : "You close chat with Esc, so nothing is sent and only you know."
-                    }
-                >
-                    <SettingSelect
-                        name="inputMode"
-                        value={s.inputMode}
-                        options={{ discard: "Keep private (Esc)", send: "Send to team (Enter)" }}
-                    />
-                </SettingRow>
-                <SettingRow
                     id="shortcut"
                     label="Lane Flash key"
-                    hint="Starts your lane opponent's Flash in one press. League still gets the key, so pick one it doesn't use."
+                    hint="Starts your lane opponent's Flash in one press. League still gets the key, even in chat, so pick one you never use, like a mouse side button."
                 >
                     <ShortcutRecorder value={s.shortcut ?? null} />
-                </SettingRow>
-                <SettingRow id="overlayMode" label="Overlay" hint="When the enemy panel shows in game.">
-                    <SettingSelect name="overlayMode" value={s.overlayMode} options={{ tab: "While holding Tab", always: "Always on" }} />
                 </SettingRow>
                 <SettingRow id="corner" label="Position" hint="Where the overlay sits on screen.">
                     <SettingSelect

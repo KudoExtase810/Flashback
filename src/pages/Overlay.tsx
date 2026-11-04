@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import { cn } from "cn";
 import OverlayList from "@/components/OverlayList";
 import useDing from "@/hooks/useDing";
@@ -20,11 +22,27 @@ const Overlay = () => {
     const state = useGameState();
     const now = useNow();
     useDing(state.timers, settings.ding);
+    const shown = state.live && held;
+
+    // Rust lets clicks through to the game everywhere except over this rect, so keep it current.
+    const panel = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const el = panel.current;
+        const send = () => {
+            const r = el?.getBoundingClientRect();
+            invoke("set_panel_rect", { rect: shown && r ? [r.x, r.y, r.width, r.height] : null });
+        };
+        send();
+        if (!el || !shown) return;
+        const observer = new ResizeObserver(send);
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [shown, settings.corner]);
 
     return (
         <div className="overlay-root pointer-events-none fixed inset-0">
-            <div className={cn("absolute", CORNERS[settings.corner])}>
-                {state.live && (held || settings.overlayMode === "always") && <OverlayList state={state} now={now} />}
+            <div ref={panel} className={cn("pointer-events-auto absolute", CORNERS[settings.corner])}>
+                {shown && <OverlayList state={state} now={now} />}
             </div>
         </div>
     );

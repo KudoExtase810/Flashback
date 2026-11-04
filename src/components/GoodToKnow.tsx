@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Keycap from "@/components/Keycap";
 
 const limits = (openCosmic: () => void): ReactNode[] => [
     <>
@@ -8,7 +7,7 @@ const limits = (openCosmic: () => void): ReactNode[] => [
     <>
         <strong>Cosmic Insight is up to you.</strong> The game only shows enemy keystones, so Flashback can't see this
         rune. Until you mark it, an enemy's summoner timers use their normal cooldown, up to about 45 seconds too long
-        for Flash. If you suspect an enemy has it, mark it with <Keycap>mid ci</Keycap> or the rune icon.{" "}
+        for Flash. If you suspect an enemy has it, click the Cosmic Insight icon next to them.{" "}
         <button
             onClick={openCosmic}
             className="cursor-pointer font-semibold text-foreground underline decoration-white/30 underline-offset-4 outline-none hover:decoration-white focus-visible:decoration-white"
@@ -21,12 +20,6 @@ const limits = (openCosmic: () => void): ReactNode[] => [
     </>,
     <>
         <strong>Running timers don't follow new items.</strong> Haste bought mid-cooldown applies to the next timer.
-    </>,
-    <>
-        <strong>The Lane Flash key needs lanes.</strong> It uses the lane the game gives you, so it works in ranked and draft. In blind pick and Practice Tool it only works when there's a single enemy.
-    </>,
-    <>
-        <strong>Chat is tracked by key presses.</strong> If Flashback thinks chat is open when it isn't, press <Keycap>Esc</Keycap> once.
     </>,
 ];
 

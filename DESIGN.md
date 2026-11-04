@@ -1,6 +1,6 @@
 ---
 name: Flashback
-description: Enemy summoner spell timers from chat callouts, in a glanceable in-game overlay.
+description: Enemy summoner spell timers you start with a click, in a glanceable in-game overlay.
 colors:
   flash: "#f2e94e"
   flash-ink: "#14140a"
@@ -69,12 +69,6 @@ components:
     size: "28px"
   button-ghost-icon-hover:
     backgroundColor: "{colors.muted}"
-  input-callout:
-    backgroundColor: "{colors.night}"
-    textColor: "{colors.foreground}"
-    rounded: "{rounded.sm}"
-    height: "36px"
-    padding: "4px 10px"
   select-trigger:
     backgroundColor: "{colors.night}"
     textColor: "{colors.foreground}"
@@ -111,7 +105,7 @@ components:
 
 The app is named after Flash, so it behaves like one: things that come back blink. The world is a near-black night with hard-edged, almost square panels and a single electric yellow that carries exactly one meaning: it's up. Live status, the brand streaks, and a spell returning are yellow; everything else stays neutral grey-white so that the yellow, when it appears, reads in a fraction of a second over a busy game map.
 
-Density is high and deliberate. The main window is 420px wide and the overlay is a tiny click-through strip of square icons, so every element earns its pixels: tight 4px gaps between icons, condensed type, tabular numerals for every number. Cooldown state is shown by subtraction, not addition: a down icon is dimmed and desaturated with a dark sweep wedge and a plain white countdown, and the reward is the blink when it returns.
+Density is high and deliberate. The main window is 420px wide and the overlay is a tiny strip of square icons that takes clicks only over itself, so every element earns its pixels: tight 4px gaps between icons, condensed type, tabular numerals for every number. Cooldown state is shown by subtraction, not addition: a down icon is dimmed and desaturated with a dark sweep wedge and a plain white countdown, and the reward is the blink when it returns.
 
 **Key Characteristics:**
 - Near-black ground, slightly lifted panels, hairline white borders.
@@ -155,9 +149,9 @@ A cold near-black neutral ramp with one saturated yellow signal.
 
 ### Hierarchy
 - **Wordmark** (700, 18px, tracking 0.18em, uppercase): the FLASHBACK wordmark and the SETTINGS page title. Page titles only.
-- **Title** (600, 15px, line-height 1): champion names, card headings, step titles, setting labels, the callout input text.
+- **Title** (600, 15px, line-height 1): champion names, card headings, step titles, setting labels.
 - **Body** (500, 12px, line-height 1.625): hints and explanatory copy, in Ash; inline `strong` lifts to Frost at 600.
-- **Label** (600, 12px, tracking 0.05em, uppercase, Ash): section headings ("How it works", "Good to know") and the alias reference terms. Badges use the same treatment at 11px bold.
+- **Label** (600, 12px, tracking 0.05em, uppercase, Ash): section headings ("How it works", "Good to know"). Badges use the same treatment at 11px bold.
 - **Countdown** (700, 13-15px scaled to icon size, tabular): numerals on timer icons; 15px on 36px main-window spells, 13px on 28px overlay icons.
 
 ### Named Rules
@@ -193,7 +187,7 @@ Quiet, icon-only, ghost.
 - The filled primary variant exists in the library (yellow on Flash Ink) but no shipped surface uses it; reserve it for a single "up"-meaning action if ever needed.
 
 ### Chips (kbd)
-- **Style:** Slate Secondary fill, Frost text, 1px Hairline ring, square, 20px tall, 12px. Used for callout syntax in explanations and the alias reference.
+- **Style:** Slate Secondary fill, Frost text, 1px Hairline ring, square, 20px tall, 12px. Used for key names (Tab, the Lane Flash key) in explanations.
 
 ### Cards / Containers
 - **Corner Style:** square.
@@ -202,9 +196,8 @@ Quiet, icon-only, ghost.
 - **Internal Padding:** 12px x 16px for the waiting card; rows 10px x 8px; overlay 4px.
 
 ### Inputs / Fields
-- **Style:** Night fill, 1px Field Line stroke, 2px corners; callout input is 36px tall at 15px text. Select triggers are square, 160px wide.
+- **Style:** Night fill, 1px Field Line stroke, 2px corners. Select triggers are square, 160px wide.
 - **Focus:** stroke shifts to yellow with a yellow ring at 50%; caret is yellow.
-- **Placeholder:** Ash, written as an example callout.
 
 ### Navigation
 - A header row: wordmark, status badge, then ghost icon buttons pushed right (clear timers, settings). Settings has a back icon button and the SETTINGS title. No tabs, no nav bar.

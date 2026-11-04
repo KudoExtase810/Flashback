@@ -3,8 +3,7 @@ import { Link } from "react-router";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { RefreshIcon, Settings01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import CalloutGuide from "@/components/CalloutGuide";
-import CalloutInput from "@/components/CalloutInput";
+import Guide from "@/components/Guide";
 import EnemyList from "@/components/EnemyList";
 import GoodToKnow from "@/components/GoodToKnow";
 import HowItWorks from "@/components/HowItWorks";
@@ -17,7 +16,7 @@ import useNow from "@/hooks/useNow";
 import { getGameState, setGameState } from "@/lib/store/gameState";
 import { checkForUpdate, getUpdateState } from "@/lib/updater/updater";
 
-const TABS = { game: "Game", callouts: "Callouts", limits: "Limits" };
+const TABS = { game: "Game", guide: "Guide", limits: "Limits" };
 
 const Home = () => {
     const state = useGameState();
@@ -58,9 +57,8 @@ const Home = () => {
                 (state.live ? (
                     <>
                         <EnemyList state={state} now={now} />
-                        <CalloutInput />
                         <p className="-mt-2 text-xs text-muted-foreground">
-                            Click an icon to start or clear its timer, the rune to mark Cosmic Insight.
+                            Click a spell to start or clear it, double-click to take 5s off. Click the Cosmic Insight icon when you suspect an enemy took it.
                         </p>
                     </>
                 ) : (
@@ -68,19 +66,19 @@ const Home = () => {
                         <WaitingForGame />
                         <HowItWorks />
                         <button
-                            onClick={() => setTab("callouts")}
+                            onClick={() => setTab("guide")}
                             className="w-fit cursor-pointer text-xs font-semibold text-foreground underline decoration-white/30 underline-offset-4 outline-none hover:decoration-white focus-visible:decoration-white"
                         >
-                            See every word you can type
+                            See every click
                         </button>
                     </>
                 ))}
-            {tab === "callouts" && <CalloutGuide />}
+            {tab === "guide" && <Guide />}
             {tab === "limits" && (
                 <GoodToKnow
                     openCosmic={() => {
-                        setTab("callouts");
-                        // The Callouts tab isn't rendered until the state change commits.
+                        setTab("guide");
+                        // The Guide tab isn't rendered until the state change commits.
                         requestAnimationFrame(() => document.getElementById("cosmic-insight")?.scrollIntoView());
                     }}
                 />

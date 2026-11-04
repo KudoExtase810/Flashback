@@ -1,25 +1,21 @@
 use rdev::{listen, Button, EventType, Key};
 use std::sync::{LazyLock, Mutex};
 use std::time::Duration;
-use tauri::{AppHandle, Emitter, Manager, WindowEvent};
+use tauri::{AppHandle, Emitter, Manager, WebviewWindow, WindowEvent};
 
-/// How a callout typed in chat is finished.
-#[derive(Clone, Copy, PartialEq)]
-enum InputMode {
-    /// Enter … Enter: the message is sent, so your team sees the callout too.
-    Send,
-    /// Enter … Esc: the message is thrown away; only Flashback reads it.
-    Discard,
-}
-
-static MODE: Mutex<InputMode> = Mutex::new(InputMode::Send);
 /// rdev name of the lane-Flash shortcut ("KeyG", "MouseUnknown(1)"), if set.
 static SHORTCUT: Mutex<Option<String>> = Mutex::new(None);
+/// The overlay panel's rect (x, y, width, height in CSS px inside the overlay window) while it's shown.
+static PANEL: Mutex<Option<[f64; 4]>> = Mutex::new(None);
 
 #[tauri::command]
-fn configure(input_mode: String, shortcut: Option<String>) {
-    *MODE.lock().unwrap() = if input_mode == "discard" { InputMode::Discard } else { InputMode::Send };
+fn configure(shortcut: Option<String>) {
     *SHORTCUT.lock().unwrap() = shortcut;
+}
+
+#[tauri::command]
+fn set_panel_rect(rect: Option<[f64; 4]>) {
+    *PANEL.lock().unwrap() = rect;
 }
 
 // The game serves this locally with a self-signed cert, which the webview would reject.
@@ -55,32 +51,10 @@ fn league_focused() -> bool {
     true
 }
 
-// Map by virtual key rather than rdev's `name`: on Windows that calls ToUnicode,
-// which eats dead keys (accents) in other apps. Letter VKs already follow the layout.
-fn key_char(key: Key) -> Option<char> {
-    use Key::*;
-    let c = match key {
-        KeyA => 'a', KeyB => 'b', KeyC => 'c', KeyD => 'd', KeyE => 'e', KeyF => 'f',
-        KeyG => 'g', KeyH => 'h', KeyI => 'i', KeyJ => 'j', KeyK => 'k', KeyL => 'l',
-        KeyM => 'm', KeyN => 'n', KeyO => 'o', KeyP => 'p', KeyQ => 'q', KeyR => 'r',
-        KeyS => 's', KeyT => 't', KeyU => 'u', KeyV => 'v', KeyW => 'w', KeyX => 'x',
-        KeyY => 'y', KeyZ => 'z', Space => ' ',
-        // Digits, for "yas f 10" (seconds ago).
-        Num0 | Kp0 => '0', Num1 | Kp1 => '1', Num2 | Kp2 => '2', Num3 | Kp3 => '3', Num4 | Kp4 => '4',
-        Num5 | Kp5 => '5', Num6 | Kp6 => '6', Num7 | Kp7 => '7', Num8 | Kp8 => '8', Num9 | Kp9 => '9',
-        _ => return None,
-    };
-    Some(c)
-}
-
-/// Global keyboard and mouse hook. Emits `phrase` (typed text to parse), `hold` (Tab held, shows the overlay) and
-/// `shortcut` (lane-Flash key pressed). The shortcut is recorded in the webview: rdev attaches to the focused
-/// window's input on each key press, which drops keys while our own window has focus.
+/// Global keyboard and mouse hook. Emits `hold` (Tab held, shows the overlay) and `shortcut` (lane-Flash key
+/// pressed). The shortcut is recorded in the webview: rdev attaches to the focused window's input on each key
+/// press, which drops keys while our own window has focus.
 fn run_hook(app: AppHandle) {
-    let mut buf = String::new();
-    // ponytail: chat open/closed is inferred from Enter/Esc, so it can desync if chat is
-    // closed another way; the next Esc resets it.
-    let mut chat_open = false;
     let mut held = false;
 
     let result = listen(move |event| {
@@ -102,44 +76,36 @@ fn run_hook(app: AppHandle) {
             held = down;
             let _ = app.emit("hold", held);
         }
-        if !down {
-            return;
-        }
-        // Only listen while League is focused, so chatting in Discord never starts timers.
-        if !league_focused() {
-            buf.clear();
-            chat_open = false;
-            return;
-        }
-        if !chat_open && SHORTCUT.lock().unwrap().as_deref() == Some(name.as_str()) {
+        // Only while League is focused, so the key does nothing in Discord.
+        if down && league_focused() && SHORTCUT.lock().unwrap().as_deref() == Some(name.as_str()) {
             let _ = app.emit("shortcut", ());
-        }
-        let Some(key) = key else { return };
-
-        // The key that closes chat decides whether we read it: Enter (sent) or Esc (discarded).
-        let closing = match key {
-            Key::Return | Key::KpReturn => Some(InputMode::Send),
-            Key::Escape => Some(InputMode::Discard),
-            _ => None,
-        };
-        match closing {
-            Some(how) => {
-                if chat_open && how == *MODE.lock().unwrap() && !buf.trim().is_empty() {
-                    let _ = app.emit("phrase", buf.clone());
-                }
-                buf.clear();
-                // Enter opens chat when it's closed; Esc only ever closes it.
-                chat_open = !chat_open && how == InputMode::Send;
-            }
-            None if key == Key::Backspace => {
-                buf.pop();
-            }
-            None if chat_open => buf.extend(key_char(key)),
-            None => {}
         }
     });
     if let Err(e) = result {
         eprintln!("keyboard hook failed: {e:?}");
+    }
+}
+
+/// The overlay lets every click through to the game, except while the cursor is over its panel.
+/// ponytail: polls the cursor at ~60 Hz; a low-level mouse hook would be event-driven if this ever matters.
+fn track_cursor(overlay: WebviewWindow) {
+    let mut over = false;
+    loop {
+        std::thread::sleep(Duration::from_millis(16));
+        let now_over = (|| {
+            let [x, y, w, h] = (*PANEL.lock().unwrap())?;
+            let cursor = overlay.cursor_position().ok()?;
+            let origin = overlay.inner_position().ok()?;
+            let scale = overlay.scale_factor().ok()?;
+            let cx = (cursor.x - origin.x as f64) / scale;
+            let cy = (cursor.y - origin.y as f64) / scale;
+            Some(cx >= x && cx < x + w && cy >= y && cy < y + h)
+        })()
+        .unwrap_or(false);
+        if now_over != over {
+            over = now_over;
+            let _ = overlay.set_ignore_cursor_events(!over);
+        }
     }
 }
 
@@ -149,10 +115,12 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
-        .invoke_handler(tauri::generate_handler![configure, live_data])
+        .invoke_handler(tauri::generate_handler![configure, set_panel_rect, live_data])
         .setup(|app| {
             let overlay = app.get_webview_window("overlay").unwrap();
             overlay.set_ignore_cursor_events(true)?;
+            // Clicking the panel must never take focus from League, or the game stops getting your keys.
+            overlay.set_focusable(false)?;
             // Cover the primary monitor; the panel is positioned with CSS.
             if let Some(m) = overlay.primary_monitor()? {
                 overlay.set_position(*m.position())?;
@@ -160,6 +128,7 @@ pub fn run() {
             }
             let handle = app.handle().clone();
             std::thread::spawn(move || run_hook(handle));
+            std::thread::spawn(move || track_cursor(overlay));
             Ok(())
         })
         .on_window_event(|window, event| {

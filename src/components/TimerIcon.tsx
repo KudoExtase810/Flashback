@@ -9,23 +9,24 @@ type Props = {
     timer?: Timer;
     now: number;
     className?: string;
-    onClick?: () => void;
+    /** Gets the click's position in a burst: 1 = click, 2 = double click, ... */
+    onClick?: (clicks: number) => void;
 };
 
 /**
  * A square game icon. On cooldown: dimmed, with a sweep (dark wedge = time left) and a white countdown.
- * Coming back: it blinks, a bright pop plus yellow afterimages, and keeps a yellow ring for 3s.
+ * Coming back: it blinks, a bright pop plus yellow afterimages, and pulses with a yellow ring for 5s.
  */
 const TimerIcon = ({ src, label, timer, now, className, onClick }: Props) => {
     const [broken, setBroken] = useState(false);
     const left = (timer?.end ?? 0) - now;
     const down = left > 0;
-    const justUp = !!timer && !down && -left < 3000;
+    const justUp = !!timer && !down && -left < 5000;
     const Tag = onClick ? "button" : "span";
     return (
         <Tag
-            onClick={onClick}
-            title={onClick ? `${label}: ${down ? "clear timer" : "start timer"}` : label}
+            onClick={onClick && ((e) => onClick(Math.max(1, e.detail)))}
+            title={onClick ? (down ? `${label}: click to clear, double-click to take 5s off` : `${label}: click to start`) : label}
             className={cn(
                 "relative grid shrink-0 place-items-center overflow-hidden bg-secondary text-[10px] font-semibold text-muted-foreground ring-1 ring-white/10",
                 justUp && "animate-blink-trail ring-2 ring-flash",
@@ -59,7 +60,7 @@ const TimerIcon = ({ src, label, timer, now, className, onClick }: Props) => {
                     </span>
                 </>
             )}
-            {justUp && <span className="animate-blink-pop pointer-events-none absolute inset-0 bg-flash mix-blend-screen" />}
+            {justUp && <span className="animate-ready-pulse pointer-events-none absolute inset-0 bg-flash mix-blend-screen" />}
         </Tag>
     );
 };

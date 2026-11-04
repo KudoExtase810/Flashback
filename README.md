@@ -1,6 +1,6 @@
 # Flashback
 
-League of Legends summoner spell timers from the callouts you already type in chat. Type `top f`, keep playing, and hold Tab to see when it's back.
+League of Legends summoner spell timers in an in-game overlay. Hold Tab, click the enemy's Flash, and see when it's back.
 
 ## Build and install (Windows)
 
@@ -20,25 +20,10 @@ Run either one to install.
 
 ## How it works
 
-1. **Call it in chat.** When an enemy uses Flash, press Enter, type `top f` and press Esc. Nothing is sent. Want your team to see it? Set Settings → "Finish callout with" to **Enter**.2. **Flashback times it.** The timer starts with the spell's real cooldown, counting the enemy's items. Enemies, spells and items come from the game itself, so there is nothing to set up.
-3. **Hold Tab to check.** Enemy spells appear on screen. A dim icon with a number is still down. When it comes back, it flashes yellow. Prefer it always visible? Pick "Always on" in Settings.
+1. **Click the spell.** When an enemy uses Flash, hold Tab and click their Flash on the overlay. Called it late? Double-click the running timer once for every 5 seconds. Clicked by mistake? Click it again to clear it.
+2. **Flashback times it.** The timer starts with the spell's real cooldown, counting the enemy's items. Enemies, spells and items come from the game itself, so there is nothing to set up.
+3. **Hold Tab to check.** A dim icon with a number is still down. When it comes back, it flashes yellow.
+
+The overlay only takes clicks over its own panel; everywhere else they go to the game, and clicking it never takes focus from League. Suspect an enemy took Cosmic Insight? Click the Cosmic Insight icon next to their portrait (their summoner spells come back faster). Want Flash in one press? Set a Lane Flash key in Settings to start your lane opponent's Flash.
 
 Before your first game, set League's window mode to **Borderless** or **Windowed**; the overlay can't draw over exclusive fullscreen. Flashback starts tracking by itself when a game loads, Practice Tool included.
-
-### What to type
-
-A target, then what they used:
-
-| Target                      | Examples                     |
-| --------------------------- | ---------------------------- |
-| Role                        | `top` `jg` `mid` `adc` `sup` |
-| Champion (first 3+ letters) | `yas`, `darius`              |
-
-| Used                | Examples                                                                                               |
-| ------------------- | ------------------------------------------------------------------------------------------------------ |
-| Summoner spell      | `f` Flash, `tp` Teleport, `ig` Ignite, `h` Heal, `ex` Exhaust, `bar` Barrier, `cl` Cleanse, `gh` Ghost |
-| Cosmic Insight rune | `ci` marks it (summoner spells come back faster)                                                       |
-
-Several at once work too: `top f mid tp`.
-
-Called it late? Add how many seconds ago it was used: `yas f 10` starts Flash with 10 seconds already gone. Called it by mistake? Add `clear`: `yas f clear` marks it up again.

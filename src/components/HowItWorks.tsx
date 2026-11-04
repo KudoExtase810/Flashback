@@ -1,25 +1,15 @@
 import type { ReactNode } from "react";
 import Keycap from "@/components/Keycap";
-import useSettings from "@/hooks/useSettings";
 
-/** The core loop in three steps: type, it times, the overlay shows it. Follows the current settings. */
+/** The core loop in three steps: click, it times, the overlay shows it. */
 const HowItWorks = () => {
-    const s = useSettings();
     const steps: { title: string; body: ReactNode }[] = [
         {
-            title: "Call out the spell",
+            title: "Click the spell",
             body: (
                 <>
-                    An enemy just used Flash? Open chat with <Keycap>Enter</Keycap>, type <Keycap>top f</Keycap>, then press{" "}
-                    {s.inputMode === "send" ? (
-                        <>
-                            <Keycap>Enter</Keycap>. Your team sees it too.
-                        </>
-                    ) : (
-                        <>
-                            <Keycap>Esc</Keycap>. Nothing is sent, so it stays between you and Flashback.
-                        </>
-                    )}
+                    An enemy just used Flash? Hold <Keycap>Tab</Keycap> and click their Flash on the overlay. Called it
+                    late? Double-click it once for every 5 seconds.
                 </>
             ),
         },
@@ -28,18 +18,13 @@ const HowItWorks = () => {
             body: (
                 <>
                     Flashback uses that champion's actual cooldown, shortened by haste from items they've bought, e.g.
-                    Ionian Boots of Lucidity. Called it after the fight? Add the seconds: <Keycap>top f 10</Keycap>.
+                    Ionian Boots of Lucidity.
                 </>
             ),
         },
         {
-            title: s.overlayMode === "tab" ? "Check with Tab" : "Check the overlay",
-            body: (
-                <>
-                    {s.overlayMode === "tab" ? "Hold Tab" : "Look at the overlay"} to see which enemy spells are still on
-                    cooldown and how long they have left.
-                </>
-            ),
+            title: "Check with Tab",
+            body: <>Hold Tab to see which enemy spells are still on cooldown and how long they have left.</>,
         },
     ];
 

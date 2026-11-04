@@ -1,16 +1,14 @@
 import GuideSection from "@/components/GuideSection";
-import Keycap from "@/components/Keycap";
-import { COSMIC_ALIASES, COSMIC_INSIGHT_HASTE, SPELLS } from "@/lib/game/data";
+import { COSMIC_INSIGHT_HASTE, SPELLS } from "@/lib/game/data";
 import { cooldown } from "@/lib/game/cooldowns";
 import { formatTime } from "@/lib/game/timers";
 import type { SpellId } from "@/lib/game/types";
 import { COSMIC_INSIGHT_ICON } from "@/lib/riot/ddragon";
 
 const EXAMPLES: SpellId[] = ["flash", "tp", "ignite"];
-const ROW = "grid grid-cols-[4.5rem_1fr] items-center gap-x-3 gap-y-2 text-xs";
 const NAME = "text-[13px] font-semibold";
 
-/** Callouts tab: what the Cosmic Insight rune changes, what it's worth, and the two ways to mark it. */
+/** Guide tab: what Cosmic Insight changes, what it's worth, and how to mark it. */
 const CosmicInsightGuide = () => (
     <GuideSection
         id="cosmic-insight"
@@ -25,15 +23,9 @@ const CosmicInsightGuide = () => (
             </p>
         </div>
 
-        <dl className={ROW}>
-            <dt className={NAME}>Type</dt>
-            <dd className="flex flex-wrap items-center gap-1">
-                {[...COSMIC_ALIASES].map((w) => <Keycap key={w}>{w}</Keycap>)}
-                <span className="ml-1 text-muted-foreground">e.g.</span> <Keycap>mid ci</Keycap>
-            </dd>
-            <dt className={NAME}>Click</dt>
-            <dd className="text-muted-foreground">The rune icon next to their name in the Game tab.</dd>
-        </dl>
+        <p className="text-xs text-muted-foreground">
+            Suspect an enemy took it? Click the Cosmic Insight icon next to their portrait, on the overlay or in the Game tab.
+        </p>
 
         <dl className="grid grid-cols-[4.5rem_auto_auto_1fr] items-center gap-x-3 gap-y-1.5 text-xs tabular-nums">
             {EXAMPLES.map((s) => (

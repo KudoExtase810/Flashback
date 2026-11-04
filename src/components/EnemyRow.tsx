@@ -2,22 +2,16 @@ import CosmicToggle from "@/components/CosmicToggle";
 import Portrait from "@/components/Portrait";
 import TimerIcon from "@/components/TimerIcon";
 import useDDragonVersion from "@/hooks/useDDragonVersion";
-import { cooldown, summonerHaste } from "@/lib/game/cooldowns";
 import { SPELLS } from "@/lib/game/data";
-import { timerKey } from "@/lib/game/timers";
+import { timerKey, toggleCosmic } from "@/lib/game/timers";
 import type { Enemy, GameState } from "@/lib/game/types";
 import { spellIcon } from "@/lib/riot/ddragon";
+import { clickSpell, getGameState, setGameState } from "@/lib/store/gameState";
 
-type Props = {
-    enemy: Enemy;
-    state: GameState;
-    now: number;
-    onToggle: (key: string, cd: number) => void;
-    onCosmic: () => void;
-};
+type Props = { enemy: Enemy; state: GameState; now: number };
 
 /** Main window row: portrait, name, Cosmic Insight mark, clickable summoner spells. */
-const EnemyRow = ({ enemy: e, state, now, onToggle, onCosmic }: Props) => {
+const EnemyRow = ({ enemy: e, state, now }: Props) => {
     const v = useDDragonVersion();
     return (
         <li className="flex items-center gap-3 px-2.5 py-2">
@@ -30,24 +24,24 @@ const EnemyRow = ({ enemy: e, state, now, onToggle, onCosmic }: Props) => {
             <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <div className="flex min-w-0 items-center gap-1.5">
                     <span className="truncate text-[15px] leading-none font-semibold">{e.champ}</span>
-                    <CosmicToggle on={state.cosmic.includes(e.role)} onClick={onCosmic} />
+                    <CosmicToggle
+                        on={state.cosmic.includes(e.role)}
+                        onClick={() => setGameState(toggleCosmic(getGameState(), e.role, Date.now()))}
+                    />
                 </div>
                 <span className="text-xs leading-none text-muted-foreground">Level {e.level}</span>
             </div>
-            {e.spells.map((s) => {
-                const key = timerKey(e.role, s);
-                return (
-                    <TimerIcon
-                        key={s}
-                        src={spellIcon(v, SPELLS[s].icon)}
-                        label={SPELLS[s].label}
-                        timer={state.timers[key]}
-                        now={now}
-                        className="size-9 text-[15px]"
-                        onClick={() => onToggle(key, cooldown(s, summonerHaste(state, e)))}
-                    />
-                );
-            })}
+            {e.spells.map((s) => (
+                <TimerIcon
+                    key={s}
+                    src={spellIcon(v, SPELLS[s].icon)}
+                    label={SPELLS[s].label}
+                    timer={state.timers[timerKey(e.role, s)]}
+                    now={now}
+                    className="size-9 text-[15px]"
+                    onClick={(clicks) => clickSpell(e.role, s, clicks)}
+                />
+            ))}
         </li>
     );
 };

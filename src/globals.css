@@ -107,11 +107,16 @@
 @utility animate-blink-pop {
     animation: blink-pop 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+/* Keeps popping while the spell is fresh (TimerIcon unmounts it after 5s). */
+@utility animate-ready-pulse {
+    animation: blink-pop 1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
 @utility animate-blink-trail {
     animation: blink-trail 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @media (prefers-reduced-motion: reduce) {
     .animate-blink-pop,
+    .animate-ready-pulse,
     .animate-blink-trail {
         animation: none;
     }

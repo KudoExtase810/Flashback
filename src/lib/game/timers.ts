@@ -1,5 +1,4 @@
 import { cooldown, summonerHaste } from "./cooldowns.ts";
-import { parse } from "./parse.ts";
 import type { GameState, Role, SpellId } from "./types.ts";
 
 /** No game running: no enemies, nothing to track. */
@@ -7,36 +6,29 @@ export const emptyState = (): GameState => ({ live: false, enemies: [], timers: 
 
 export const timerKey = (role: Role, spell: SpellId) => `${role}:${spell}`;
 
-/** Starts (or, after "clear", removes) timers for every command in the phrase. Same object if nothing matched. */
-export function applyPhrase(state: GameState, phrase: string, now: number): GameState {
-    let timers = { ...state.timers };
-    let changed = false;
-    for (const cmd of parse(phrase, state.enemies)) {
-        const enemy = state.enemies.find((e) => e.role === cmd.role);
-        if (!enemy) continue; // no game: no enemies, nothing to time
-        if ("cosmic" in cmd) {
-            const next = toggleCosmic({ ...state, timers }, cmd.role, now);
-            timers = next.timers;
-            state = { ...state, cosmic: next.cosmic };
-            changed = true;
-            continue;
-        }
-        const { spell } = cmd;
-        const key = timerKey(cmd.role, spell);
-        if (cmd.clear) {
-            if (!timers[key]) continue;
-            delete timers[key];
-            changed = true;
-            continue;
-        }
-        if (!enemy.spells.includes(spell)) continue; // live data says they don't have it
-        const cd = cooldown(spell, summonerHaste(state, enemy));
-        const late = cmd.late ?? 0;
-        if (late >= cd) continue; // it would already be back
-        timers[key] = { end: now + (cd - late) * 1000, cd };
-        changed = true;
-    }
-    return changed ? { ...state, timers } : state;
+const running = (state: GameState, key: string, now: number) => (state.timers[key]?.end ?? 0) > now;
+
+/** (Re)starts a spell's timer with the enemy's current haste. Same object if they don't have it (or no game). */
+export function startTimer(state: GameState, role: Role, spell: SpellId, now: number): GameState {
+    const enemy = state.enemies.find((e) => e.role === role);
+    if (!enemy?.spells.includes(spell)) return state;
+    const cd = cooldown(spell, summonerHaste(state, enemy));
+    return { ...state, timers: { ...state.timers, [timerKey(role, spell)]: { end: now + cd * 1000, cd } } };
+}
+
+/** Marks the spell as up. */
+export function clearTimer(state: GameState, key: string): GameState {
+    if (!state.timers[key]) return state;
+    const { [key]: _, ...timers } = state.timers;
+    return { ...state, timers };
+}
+
+/** Takes `ms` off a running timer (it was used that long before you marked it); past zero it's up. */
+export function shiftTimer(state: GameState, key: string, ms: number, now: number): GameState {
+    if (!running(state, key, now)) return state;
+    const t = state.timers[key];
+    if (t.end - ms <= now) return clearTimer(state, key);
+    return { ...state, timers: { ...state.timers, [key]: { ...t, end: t.end - ms } } };
 }
 
 /**
@@ -56,14 +48,6 @@ export function toggleCosmic(state: GameState, role: Role, now: number): GameSta
         next.timers[key] = { end: now + (t.end - now) * (cd / t.cd), cd };
     }
     return next;
-}
-
-/** Starts the timer, or clears it if it's running. */
-export function toggleTimer(state: GameState, key: string, cd: number, now: number): GameState {
-    const timers = { ...state.timers };
-    if ((timers[key]?.end ?? 0) > now) delete timers[key];
-    else timers[key] = { end: now + cd * 1000, cd };
-    return { ...state, timers };
 }
 
 /** "4:12" above a minute, "45" below. */
